@@ -1,220 +1,104 @@
 # JavaPro
 프로젝트 개요
+이 프로젝트는 Java Swing을 이용하여 구현한 카페 키오스크 프로그램이다.
+사용자가 아메리카노, 라떼, 에스프레소, 치즈케이크 등의 메뉴를 선택하면 장바구니에 담기고, 총액을 계산하여 보여준다. 또한, “오늘 주문 내역” 기능을 통해 하루 동안 진행된 주문들을 한 번에 확인할 수 있다.
 
-이 프로젝트는 카페 키오스크(Cafe Kiosk System) 를 Java Swing 기반으로 구현한 프로그램입니다.
-사용자가 메뉴를 선택하면 장바구니에 담기고, 총액을 계산하여 보여주며,
-오늘 하루 동안의 주문 내역을 확인할 수 있는 기능 을 추가로 제공합니다.
+기능 설명
 
-개발 언어: Java
+메뉴 선택 기능
 
-GUI 라이브러리: Swing
+메인 화면 왼쪽에 Americano, Latte, Espresso, Cheesecake 네 가지 메뉴 버튼이 배치되어 있다.
 
-개발 도구: IntelliJ IDEA (또는 Eclipse 등 Java IDE)
+사용자가 버튼을 클릭하면 해당 메뉴가 장바구니(ArrayList<MenuItem>)에 추가되고, 오른쪽 주문 내역 영역(JTextArea)에 메뉴 이름과 가격이 한 줄씩 출력된다.
 
-2. 주요 기능(기능 설명)
-2-1. 메뉴 선택 및 장바구니
+하단의 라벨에서 현재 장바구니의 총액을 실시간으로 보여준다.
 
-메인 화면 왼쪽에 4개의 메뉴 버튼이 배치됩니다.
+주문하기 기능
 
-Americano (2500₮)
+주문하기 버튼 클릭 시 장바구니가 비어 있으면 “장바구니가 비어 있습니다!”라는 경고 메시지를 띄운다.
 
-Latte (3500₮)
+메뉴가 하나 이상 있을 경우, 현재 장바구니 내용을 “오늘 주문 내역” 리스트에 저장하고, “주문이 완료되었습니다! 총액: XXX₮” 메시지를 보여준 뒤 장바구니를 초기화한다.
 
-Espresso (2000₮)
+비우기 기능
 
-Cheesecake (4500₮)
+비우기 버튼을 누르면 장바구니에 담긴 모든 메뉴를 삭제하고 총액을 0으로 초기화한다.
 
-사용자가 메뉴 버튼을 클릭하면 해당 메뉴가 장바구니(ArrayList) 에 추가됩니다.
+주문 내역 표시 영역도 함께 갱신된다.
 
-오른쪽 상단의 주문 내역 영역에 선택된 메뉴와 가격이 한 줄씩 표시됩니다.
+오늘 주문 내역 조회 기능
 
-하단의 총액: 라벨에 현재 장바구니의 총 금액이 실시간으로 갱신됩니다.
+오늘 주문 내역 버튼을 누르면 프로그램 실행 중에 완료된 모든 주문을 순서대로 팝업으로 보여준다.
 
-2-2. 주문하기 버튼
+각 주문은 “1번째 주문: Americano(2500₮), Latte(3500₮), 총액: 6000₮”와 같은 형식으로 저장된다.
 
-주문하기 버튼 클릭 시:
+저장된 주문이 하나도 없으면 “오늘 등록된 주문이 없습니다.”라는 메시지가 출력된다.
 
-장바구니가 비어 있으면
-→ 장바구니가 비어 있습니다! 라는 경고 메시지를 띄웁니다.
+프로그램 구조
 
-장바구니에 메뉴가 있으면
+Main 클래스
 
-현재 장바구니 내용을 “오늘 주문 내역” 리스트에 저장합니다.
+Java 프로그램의 시작점으로, main 메서드에서 SwingUtilities.invokeLater()를 사용하여 KioskFrame 객체를 생성하고 화면에 띄운다.
 
-주문이 완료되었습니다! 총액: XXX₮ 팝업을 보여줍니다.
+GUI 코드를 Event Dispatch Thread에서 실행함으로써 스레드 안정성을 확보한다.
 
-장바구니를 비우고 화면을 초기화합니다.
+MenuItem 클래스
 
-2-3. 비우기 버튼
+하나의 메뉴(이름, 가격)를 표현하는 데이터 모델 클래스이다.
 
-비우기 버튼 클릭 시:
+name(메뉴 이름), price(가격) 필드를 가지고 있으며, getName(), getPrice() 메서드로 값을 반환한다.
 
-현재 장바구니에 담겨 있는 메뉴 리스트를 모두 삭제합니다.
+toString()을 오버라이드하여 “메뉴이름 (가격₮)” 형식의 문자열을 제공한다.
 
-총액을 0으로 초기화합니다.
+KioskFrame 클래스
 
-오른쪽 주문 내역 표시도 새로 갱신됩니다.
+JFrame을 상속받아 실제 키오스크 화면을 구성하고 모든 로직을 처리하는 핵심 클래스이다.
 
-2-4. 오늘 주문 내역 버튼
+주요 컴포넌트
 
-오늘 주문 내역 버튼 클릭 시:
+menuPanel : 메뉴 버튼이 배치되는 패널(GridLayout 2×2)
 
-오늘 프로그램을 실행한 동안 주문하기 버튼으로 확정된 모든 주문 목록 을 팝업으로 보여줍니다.
+orderList : 장바구니 내역을 보여주는 JTextArea
 
-각 주문은 다음과 같은 형식으로 저장됩니다.
+totalLabel : 총액을 표시하는 JLabel
 
-1번째 주문: Americano(2500₮), Latte(3500₮), 총액: 6000₮
+orderButton, clearButton, historyButton : 각각 주문하기, 비우기, 오늘 주문 내역 조회 버튼
 
-만약 아직 확정된 주문이 없다면
-→ 오늘 등록된 주문이 없습니다. 라는 메시지를 보여줍니다.
+주요 데이터
 
-3. 프로그램 구조(클래스 설명)
-3-1. Main 클래스 (Main.java)
-public class Main {
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            KioskFrame frame = new KioskFrame();
-            frame.setVisible(true);
-        });
-    }
-}
+ArrayList<MenuItem> cart : 현재 장바구니에 담긴 메뉴 목록
 
+int totalPrice : 장바구니의 총 금액
 
-Java 프로그램의 시작점.
+ArrayList<String> orderHistory : 오늘 확정된 주문들을 문자열로 저장
 
-SwingUtilities.invokeLater() 를 사용하여
-GUI 생성 코드를 Event Dispatch Thread(EDT) 에서 안전하게 실행합니다.
+int orderCount : 몇 번째 주문인지 카운트
 
-KioskFrame 객체를 생성하고 setVisible(true) 로 창을 화면에 띄웁니다.
+주요 메서드
 
-3-2. MenuItem 클래스 (MenuItem.java)
-public class MenuItem {
-    private String name; // 메뉴 이름
-    private int price;   // 가격
+addMenuButton() : 메뉴 버튼 생성 및 이벤트 등록
 
-    public MenuItem(String name, int price) { ... }
+addToCart() : 장바구니에 메뉴 추가 및 화면 갱신
 
-    public String getName() { ... }
-    public int getPrice() { ... }
+clearCart() : 장바구니와 총액 초기화
 
-    @Override
-    public String toString() {
-        return name + " (" + price + "₮)";
-    }
-}
+updateDisplay() : 주문 내역과 총액 라벨을 화면에 다시 출력
 
+saveCurrentOrderToHistory() : 현재 장바구니를 하나의 주문 문자열로 만들어 주문 내역 리스트에 저장
 
-하나의 메뉴(예: Americano, Latte)를 표현하는 데이터 모델 클래스 입니다.
+showOrderHistory() : 오늘 주문 내역을 팝업으로 출력
 
-필드:
+실행 방법
 
-name : 메뉴 이름
+JDK 8 이상을 설치한다.
 
-price : 메뉴 가격
+IDE(IntelliJ, Eclipse 등)에서 Java 프로젝트를 생성한 뒤 Main.java, KioskFrame.java, MenuItem.java 파일을 src 폴더에 넣는다.
 
-메서드:
+IDE에서 Main 클래스를 선택하고 Run 또는 실행 버튼으로 main 메서드를 실행한다.
 
-getName(), getPrice() : 메뉴 정보 조회
+실행된 창에서 메뉴 버튼을 눌러 장바구니에 담고,
 
-toString() : 메뉴를 "Americano (2500₮)" 형태의 문자열로 반환
+주문하기 버튼으로 주문을 완료하고
 
-3-3. KioskFrame 클래스 (KioskFrame.java)
+비우기 버튼으로 장바구니를 초기화하며
 
-JFrame 을 상속받아 실제 키오스크 화면을 구성하고 로직을 처리하는 핵심 클래스입니다.
-
-(1) 주요 UI 컴포넌트
-
-menuPanel : 왼쪽의 메뉴 버튼 4개가 배치되는 패널 (GridLayout 2×2)
-
-orderList : 오른쪽 상단의 주문 내역을 보여주는 JTextArea
-
-totalLabel : 하단의 총액(총액: XXX₮)을 보여주는 JLabel
-
-orderButton : 주문 확정 버튼 (주문하기)
-
-clearButton : 장바구니 비우기 버튼 (비우기)
-
-historyButton : 오늘 주문 내역 확인 버튼 (오늘 주문 내역)
-
-(2) 데이터 구조
-
-ArrayList<MenuItem> cart
-→ 현재 장바구니에 담겨 있는 메뉴 목록
-
-int totalPrice
-→ 장바구니의 총 금액
-
-ArrayList<String> orderHistory
-→ 오늘 확정된 주문들을 문자열로 저장하는 리스트
-
-int orderCount
-→ 몇 번째 주문인지 카운트하는 변수 (1번째, 2번째 …)
-
-(3) 주요 메서드
-
-addMenuButton(String name, int price)
-→ 메뉴 버튼을 생성하고, 클릭 시 해당 메뉴를 cart에 추가하도록 ActionListener 설정
-
-addToCart(MenuItem item)
-→ 장바구니에 메뉴 추가 + 총액 갱신 + 화면 업데이트
-
-clearCart()
-→ 장바구니와 총액을 초기화하고 화면을 새로 그림
-
-updateDisplay()
-→ orderList 와 totalLabel 을 현재 cart와 totalPrice 값에 맞게 다시 출력
-
-saveCurrentOrderToHistory()
-→ 현재 장바구니 정보를 한 줄 문자열 로 만들어 orderHistory 에 저장
-
-showOrderHistory()
-→ orderHistory 내용을 모아서 팝업(JOptionPane) 으로 출력
-
-4. 실행 방법
-
-JDK 설치
-
-JDK 8 이상 설치 (예: Temurin, Oracle JDK 등)
-
-프로젝트 열기
-
-IntelliJ IDEA 또는 Eclipse에서 Java 프로젝트로 Main.java, KioskFrame.java, MenuItem.java 파일을 포함한 프로젝트를 연다.
-
-Main 클래스 실행
-
-Main.java 파일을 열고
-→ Run 'Main.main()' 으로 프로그램 실행.
-
-프로그램 사용 방법
-
-왼쪽의 메뉴 버튼 중 원하는 음료/디저트를 클릭하여 장바구니에 담는다.
-
-오른쪽 상단 주문 내역 에 담긴 메뉴와 금액을 확인한다.
-
-하단의 주문하기 버튼:
-
-장바구니가 비어 있으면 경고 메시지
-
-메뉴가 있으면 주문 완료 메시지와 함께 오늘 주문 내역에 저장
-
-비우기 버튼:
-
-현재 장바구니와 총액을 초기화
-
-오늘 주문 내역 버튼:
-
-오늘 진행된 모든 주문 목록을 팝업으로 확인 가능
-
-5. 개선 및 확장 가능성
-
-주문 내역을 텍스트 파일이나 DB에 저장하여 프로그램을 다시 실행해도 기록이 남도록 확장 가능
-
-관리자 페이지를 만들어
-
-메뉴 추가/수정/삭제 기능
-
-하루 매출 합계, 인기 메뉴 통계 등 표시 가능
-
-로그인/회원 기능을 추가하여
-
-포인트 적립, 단골 손님 관리 등으로 확장 가능
+오늘 주문 내역 버튼으로 하루 주문 기록을 확인할 수 있다.
